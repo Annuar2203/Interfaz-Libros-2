@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Angular DataTable</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
+</head>
+<body ng-app="myApp" ng-controller="myCtrl">
+
+  <nav class="bg-green-700 border-gray-200">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">Biblioteca de Jean y Annuar</span>
+    </div>
+  </nav>
+
+  <div class="container mx-auto mt-5">
+    <div class="flex justify-center mb-4">
+      <button class="bg-green-700 text-white px-4 py-2 rounded" onclick="document.getElementById('modalCreate').classList.remove('hidden')">Crear</button>
+    </div>
+    
+    <table id="example" class="display" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Autores</th>
+            <th>Años de Nacimiento</th>
+            <th>Años de Fallecimiento</th>
+            <th>Opciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="book in books">
+            <td>{{ book.id }}</td>
+            <td>{{ book.title }}</td>
+            <td>
+              <span ng-repeat="author in book.authors track by $index">{{ author.name }}<span ng-if="!$last">, </span></span>
+            </td>
+            <td>
+              <span ng-repeat="author in book.authors track by $index">{{ author.birthYear }}<span ng-if="!$last">, </span></span>
+            </td>
+            <td>
+              <span ng-repeat="author in book.authors track by $index">{{ author.deathYear ? author.deathYear : 'Vivo' }}<span ng-if="!$last">, </span></span>
+            </td>
+            <td>
+                <button ng-click="showDetails(book)" class="bg-green-500 text-white px-2 py-1 rounded mr-2" title="Ver">Ver</button>
+                <button class="bg-blue-500 text-white px-2 py-1 rounded mr-2" title="Editar">Editar</button>
+                
+              <button class="bg-red-500 text-white px-2 py-1 rounded" title="Eliminar">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    <!-- Modal Create -->
+    <div id="modalCreate" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+      <div class="bg-white rounded-lg shadow-lg p-6">
+          <h2 class="text-xl font-semibold mb-4">Crear nuevo registro</h2>
+          <form>
+              <!-- Your form fields here -->
+              <div class="grid gap-6 mb-6 md:grid-cols-2">
+                <div>
+                    <label for="book_title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Título</label>
+                    <input type="text" id="book_title" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="La Ballena Willy" required />
+                </div>
+                <div>
+                    <label for="author" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Autor <button type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-xs px-2 py-1.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">+</button>
+                    </label>
+                    
+                    <input type="text" id="author" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Shakespeare" required />
+                </div>
+                <div>
+                    <label for="birth_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha de Nacimiento</label>
+                    <input type="tel" id="birth_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Desde 1500 AC" required />
+                </div>
+                <div>
+                    <label for="death_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha de Defunción</label>
+                    <input type="tel" id="death_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Hasta 1600 AC" required />
+                </div>
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Género(s) de libros</label>
+                    <div class="flex items-center mb-2">
+                        <input id="genre-ficcion" type="checkbox" value="fiction" name="genres" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="genre-ficcion" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Ficción</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="genre-misterio" type="checkbox" value="mystery" name="genres" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="genre-misterio" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Misterio</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="genre-drama" type="checkbox" value="fiction" name="genres" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="genre-drama" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Drama</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="genre-satira" type="checkbox" value="mystery" name="genres" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="genre-satira" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Satira</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="genre-romance" type="checkbox" value="fiction" name="genres" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="genre-romance" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Romance</label>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <input id="genre-oda" type="checkbox" value="mystery" name="genres" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="genre-oda" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Oda</label>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Subir imagen</label>
+                <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" accept="image/*">
+            </div>
+            <div>
+                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Subir archivo PDF</label>
+                <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" accept=".pdf">
+            </div>
+              <button type="submit" class="text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Submit</button>
+          </form>
+          <button class="mt-4 text-gray-700 hover:text-gray-900" onclick="document.getElementById('modalCreate').classList.add('hidden')">Cerrar</button>
+      </div>
+    </div>
+
+    <!-- Modal Details -->
+    <div id="modalDetails" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-4" id="detailBookTitle"></h2>
+            <img id="detailBookImage" class="mb-4 rounded" src="" alt="Imagen del libro" style="max-width: 200px;">
+            <p><strong>Autores:</strong> <span id="detailAuthor"></span></p>
+            <p><strong>Años de nacimiento:</strong> <span id="detailBirthYear"></span></p>
+            <p><strong>Años de fallecimiento:</strong> <span id="detailDeathYear"></span></p>
+            <p><strong>Contador de descargas:</strong> <span id="detailDownloads"></span></p>
+            <button id="downloadButton" class="mt-4 bg-green-500 text-white px-4 py-2 rounded">Descargar</button>
+            <button onclick="document.getElementById('modalDetails').classList.add('hidden')" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Cerrar</button>
+        </div>
+    </div>
+  
+    
+  
+  
+
+  </div>
+
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, $timeout) {
+        $scope.books = [
+        { 
+        id: 1, 
+        title: 'El Quijote', 
+        authors: [{ name: 'Miguel de Cervantes', birthYear: 1547, deathYear: 1616 }],
+        image: 'ruta/a/imagen1.jpg',
+        downloads: 150 
+        },
+        { 
+        id: 2, 
+        title: 'Cien Años de Soledad', 
+        authors: [{ name: 'Gabriel García Márquez', birthYear: 1927, deathYear: 2014 }],
+        image: 'ruta/a/imagen2.jpg',
+        downloads: 200 
+        },
+        { 
+        id: 3, 
+        title: 'La Odisea', 
+        authors: [{ name: 'Homero', birthYear: -800, deathYear: -700 }],
+        image: 'ruta/a/imagen3.jpg',
+        downloads: 80 
+        },
+        { 
+        id: 4, 
+        title: 'La Divina Comedia', 
+        authors: [{ name: 'Dante Alighieri', birthYear: 1265, deathYear: 1321 }],
+        image: 'ruta/a/imagen4.jpg',
+        downloads: 120 
+        },
+        { 
+        id: 5, 
+        title: 'Orgullo y Prejuicio', 
+        authors: [{ name: 'Jane Austen', birthYear: 1775, deathYear: 1817 }],
+        image: 'ruta/a/imagen5.jpg',
+        downloads: 90 
+        },
+        { 
+        id: 6, 
+        title: '1984', 
+        authors: [{ name: 'George Orwell', birthYear: 1903, deathYear: 1950 }],
+        image: 'ruta/a/imagen6.jpg',
+        downloads: 300 
+        },
+        { 
+        id: 7, 
+        title: 'Matar a un Ruiseñor', 
+        authors: [{ name: 'Harper Lee', birthYear: 1926, deathYear: 2016 }],
+        image: 'ruta/a/imagen7.jpg',
+        downloads: 110 
+        },
+        { 
+        id: 8, 
+        title: 'Crimen y Castigo', 
+        authors: [{ name: 'Fyodor Dostoevsky', birthYear: 1821, deathYear: 1881 }],
+        image: 'ruta/a/imagen8.jpg',
+        downloads: 75 
+        },
+        { 
+        id: 9, 
+        title: 'En Busca del Tiempo Perdido', 
+        authors: [{ name: 'Marcel Proust', birthYear: 1871, deathYear: 1922 }],
+        image: 'ruta/a/imagen9.jpg',
+        downloads: 95 
+        },
+        { 
+        id: 10, 
+        title: 'Don Juan Tenorio', 
+        authors: [{ name: 'José Zorrilla', birthYear: 1817, deathYear: 1893 }],
+        image: 'ruta/a/imagen10.jpg',
+        downloads: 85 
+        },
+        { 
+        id: 11, 
+        title: 'Hamlet', 
+        authors: [{ name: 'William Shakespeare', birthYear: 1564, deathYear: 1616 }],
+        image: 'ruta/a/imagen11.jpg',
+        downloads: 130 
+        },
+        { 
+        id: 12, 
+        title: 'Ulises', 
+        authors: [{ name: 'James Joyce', birthYear: 1882, deathYear: 1941 }],
+        image: 'ruta/a/imagen12.jpg',
+        downloads: 140 
+        },
+        { 
+        id: 13, 
+        title: 'El Proceso', 
+        authors: [{ name: 'Franz Kafka', birthYear: 1883, deathYear: 1924 }],
+        image: 'ruta/a/imagen13.jpg',
+        downloads: 60 
+        },
+        { 
+        id: 14, 
+        title: 'Madame Bovary', 
+        authors: [{ name: 'Gustave Flaubert', birthYear: 1821, deathYear: 1880 }],
+        image: 'ruta/a/imagen14.jpg',
+        downloads: 70 
+        },
+        { 
+        id: 15, 
+        title: 'Guerra y Paz', 
+        authors: [{ name: 'Leo Tolstoy', birthYear: 1828, deathYear: 1910 }],
+        image: 'ruta/a/imagen15.jpg',
+        downloads: 250 
+        },
+        { 
+        id: 16, 
+        title: 'El Nombre de la Rosa', 
+        authors: [
+            { name: 'Umberto Eco', birthYear: 1932, deathYear: 2016 },
+            { name: 'Otro Autor', birthYear: 1970, deathYear: 2010 }
+        ],
+        image: 'ruta/a/imagen16.jpg',
+        downloads: 300 
+        }
+    ];
+
+
+        $scope.showDetails = function(book) {
+            // Mostrar detalles del libro
+            document.getElementById('detailBookTitle').innerText = book.title;
+            document.getElementById('detailBookImage').src = book.image; 
+            const authors = book.authors.map(author => author.name).join(', ');
+            document.getElementById('detailAuthor').innerText = authors;
+
+            const birthYears = book.authors.map(author => author.birthYear).join(', ');
+            const deathYears = book.authors.map(author => author.deathYear ? author.deathYear : 'Vivo').join(', ');
+
+            document.getElementById('detailBirthYear').innerText = birthYears;
+            document.getElementById('detailDeathYear').innerText = deathYears;
+            document.getElementById('detailDownloads').innerText = book.downloads; 
+            document.getElementById('modalDetails').classList.remove('hidden');
+        };
+
+
+
+
+      $timeout(function() {
+        $('#example').DataTable();
+      }, 0);
+    });
+</script>
+</body>
+</html>
+
